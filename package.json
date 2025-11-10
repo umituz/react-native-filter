@@ -1,6 +1,6 @@
 {
   "name": "@umituz/react-native-filter",
-  "version": "1.1.1",
+  "version": "1.1.4",
   "description": "Modern, reusable filter system for React Native with bottom sheet UI, single/multi-select support, and theme-aware design",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
