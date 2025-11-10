@@ -1,0 +1,60 @@
+{
+  "name": "@umituz/react-native-filter",
+  "version": "1.0.0",
+  "description": "Modern, reusable filter system for React Native with bottom sheet UI, single/multi-select support, and theme-aware design",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf lib",
+    "prebuild": "npm run clean",
+    "version:patch": "npm version patch -m 'chore: release v%s'",
+    "version:minor": "npm version minor -m 'chore: release v%s'",
+    "version:major": "npm version major -m 'chore: release v%s'"
+  },
+  "keywords": [
+    "react-native",
+    "filter",
+    "bottom-sheet",
+    "modal",
+    "list-filters",
+    "multi-select",
+    "single-select"
+  ],
+  "author": "Ümit UZ <umit@umituz.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/umituz/react-native-filter"
+  },
+  "peerDependencies": {
+    "@umituz/react-native-bottom-sheet": "*",
+    "@umituz/react-native-design-system": "*",
+    "@umituz/react-native-theme": "*",
+    "@umituz/react-native-localization": "*",
+    "react": ">=18.2.0",
+    "react-native": ">=0.74.0"
+  },
+  "devDependencies": {
+    "@umituz/react-native-bottom-sheet": "latest",
+    "@umituz/react-native-design-system": "latest",
+    "@umituz/react-native-theme": "latest",
+    "@umituz/react-native-localization": "latest",
+    "@types/react": "^18.2.45",
+    "@types/react-native": "^0.73.0",
+    "react": "^18.2.0",
+    "react-native": "^0.74.0",
+    "typescript": "^5.3.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ]
+}
+
