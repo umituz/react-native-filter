@@ -38,7 +38,7 @@ import {
   AtomicButton,
   AtomicIcon,
 } from "@umituz/react-native-design-system";
-import { useAppDesignTokens } from "@umituz/react-native-theme";
+import { useAppDesignTokens } from "@umituz/react-native-design-system-theme";
 import { useLocalization } from "@umituz/react-native-localization";
 import { BottomSheet, type BottomSheetRef } from "@umituz/react-native-bottom-sheet";
 import type { FilterOption } from "../../domain/entities/Filter";

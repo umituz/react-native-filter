@@ -52,14 +52,14 @@
  *
  * Technical:
  * - Uses @umituz/react-native-bottom-sheet for UI
- * - Theme-aware with @umituz/react-native-theme
+ * - Theme-aware with @umituz/react-native-design-system-theme
  * - Localization support with @umituz/react-native-localization
  * - Zero backend dependencies
  */
 
 // Domain Entities
-export type { FilterOption, FilterConfig } from "./domain/entities/Filter";
-export { FilterUtils } from "./domain/entities/Filter";
+export type { FilterOption, FilterConfig, FilterCondition } from "./domain/entities/Filter";
+export { FilterUtils, DataFilterUtils } from "./domain/entities/Filter";
 
 // Hooks
 export { useListFilters, type UseListFiltersReturn } from "./presentation/hooks/useListFilters";

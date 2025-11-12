@@ -14,7 +14,7 @@ npm install @umituz/react-native-filter
 - `react-native` >= 0.74.0
 - `@umituz/react-native-bottom-sheet` >= 1.0.0
 - `@umituz/react-native-design-system` >= 1.0.0
-- `@umituz/react-native-theme` >= 1.0.0
+- `@umituz/react-native-design-system-theme` >= 1.0.0
 - `@umituz/react-native-localization` >= 1.0.0
 
 ## Features
