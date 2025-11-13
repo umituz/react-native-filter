@@ -12,14 +12,14 @@ npm install @umituz/react-native-filter
 
 - `react` >= 18.2.0
 - `react-native` >= 0.74.0
-- `@umituz/react-native-bottom-sheet` >= 1.0.0
+- `react-native-safe-area-context` >= 5.0.0
 - `@umituz/react-native-design-system` >= 1.0.0
 - `@umituz/react-native-design-system-theme` >= 1.0.0
 - `@umituz/react-native-localization` >= 1.0.0
 
 ## Features
 
-- ✅ Bottom sheet UI (smooth animations)
+- ✅ Native Modal UI (no extra dependencies, works out of the box)
 - ✅ Single/multi-select support
 - ✅ Icon support for filter options
 - ✅ Clear filters button
@@ -33,14 +33,14 @@ npm install @umituz/react-native-filter
 ### Basic Usage
 
 ```tsx
+import { useState } from 'react';
 import {
   FilterSheet,
   useListFilters,
-  useBottomSheet,
 } from '@umituz/react-native-filter';
 
 const MyScreen = () => {
-  const { sheetRef, open, close } = useBottomSheet();
+  const [filterVisible, setFilterVisible] = useState(false);
   
   const filterOptions = [
     { id: 'all', label: 'All Items' },
@@ -55,14 +55,14 @@ const MyScreen = () => {
 
   return (
     <>
-      <Button onPress={open}>Filter</Button>
+      <Button onPress={() => setFilterVisible(true)}>Filter</Button>
       <FilterSheet
-        ref={sheetRef}
+        visible={filterVisible}
         options={filterOptions}
         selectedIds={selectedIds}
         onFilterPress={handleFilterPress}
         onClearFilters={handleClearFilters}
-        onClose={close}
+        onClose={() => setFilterVisible(false)}
       />
     </>
   );
