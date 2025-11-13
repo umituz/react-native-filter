@@ -41,7 +41,6 @@ import {
 import { useAppDesignTokens } from "@umituz/react-native-design-system-theme";
 import { useLocalization } from "@umituz/react-native-localization";
 import { BottomSheet, type BottomSheetRef } from "@umituz/react-native-bottom-sheet";
-import { useReanimatedReady } from "@umituz/react-native-animation";
 import type { FilterOption } from "../../domain/entities/Filter";
 import { FilterUtils } from "../../domain/entities/Filter";
 
@@ -98,9 +97,6 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
     const { t } = useLocalization();
     const [isRendered, setIsRendered] = useState(false);
     const internalRef = React.useRef<BottomSheetRef>(null);
-    // CRITICAL: Check if Reanimated is ready before rendering BottomSheet
-    // This prevents "layoutState.get is not a function" errors
-    const isReanimatedReady = useReanimatedReady();
 
     // Helper function to ensure component is rendered before calling methods
     const ensureRendered = useCallback(() => {
@@ -179,9 +175,9 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
     }, [onClose]);
 
     // Lazy rendering: Only render BottomSheet when it's been opened at least once
-    // AND when Reanimated is ready
     // This prevents Reanimated initialization errors on app startup
-    if (!isRendered || !isReanimatedReady) {
+    // BottomSheet component has its own Reanimated ready check
+    if (!isRendered) {
       return null;
     }
 
