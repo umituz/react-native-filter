@@ -31,7 +31,7 @@
  * ```
  */
 
-import React, { forwardRef, useCallback, useState } from "react";
+import React, { forwardRef, useCallback } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import {
   AtomicText,
@@ -95,68 +95,26 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
   ) => {
     const tokens = useAppDesignTokens();
     const { t } = useLocalization();
-    const [isRendered, setIsRendered] = useState(false);
     const internalRef = React.useRef<BottomSheetRef>(null);
 
-    // Helper function to ensure component is rendered before calling methods
-    const ensureRendered = useCallback(() => {
-      if (!isRendered) {
-        setIsRendered(true);
-        return true; // Component needs to be rendered first
-      }
-      return false; // Component is already rendered
-    }, [isRendered]);
-
-    // Expose ref methods
+    // Expose ref methods - BottomSheet handles Reanimated ready check
     React.useImperativeHandle(ref, () => ({
       snapToIndex: (index: number) => {
-        const needsRender = ensureRendered();
-        if (needsRender) {
-          // Wait for component to mount, then call snapToIndex
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              internalRef.current?.snapToIndex(index);
-            });
-          });
-        } else {
-          internalRef.current?.snapToIndex(index);
-        }
+        internalRef.current?.snapToIndex(index);
       },
       snapToPosition: (position: string | number) => {
-        const needsRender = ensureRendered();
-        if (needsRender) {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              internalRef.current?.snapToPosition(position);
-            });
-          });
-        } else {
-          internalRef.current?.snapToPosition(position);
-        }
+        internalRef.current?.snapToPosition(position);
       },
       expand: () => {
-        const needsRender = ensureRendered();
-        if (needsRender) {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              internalRef.current?.expand();
-            });
-          });
-        } else {
-          internalRef.current?.expand();
-        }
+        internalRef.current?.expand();
       },
       collapse: () => {
-        if (isRendered) {
-          internalRef.current?.collapse();
-        }
+        internalRef.current?.collapse();
       },
       close: () => {
-        if (isRendered) {
-          internalRef.current?.close();
-        }
+        internalRef.current?.close();
       },
-    }), [isRendered, ensureRendered]);
+    }), []);
 
     const activeFilter = FilterUtils.getActiveFilter(selectedIds, defaultFilterId);
     const hasActiveFilter = FilterUtils.hasActiveFilter(selectedIds, defaultFilterId);
@@ -174,13 +132,7 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
       onClose?.();
     }, [onClose]);
 
-    // Lazy rendering: Only render BottomSheet when it's been opened at least once
-    // This prevents Reanimated initialization errors on app startup
-    // BottomSheet component has its own Reanimated ready check
-    if (!isRendered) {
-      return null;
-    }
-
+    // BottomSheet component handles Reanimated ready check internally
     return (
       <BottomSheet
         ref={internalRef}
