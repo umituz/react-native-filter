@@ -72,15 +72,15 @@ const MyScreen = () => {
 ### With Filter Icon Button
 
 ```tsx
+import { useState } from 'react';
 import { AtomicIcon } from '@umituz/react-native-design-system';
 import {
   FilterSheet,
   useListFilters,
-  useBottomSheet,
 } from '@umituz/react-native-filter';
 
 const MyScreen = () => {
-  const { sheetRef, open, close } = useBottomSheet();
+  const [filterVisible, setFilterVisible] = useState(false);
   const { selectedIds, handleFilterPress, handleClearFilters, hasActiveFilter } = useListFilters({
     options: filterOptions,
     defaultFilterId: 'all',
@@ -88,7 +88,7 @@ const MyScreen = () => {
 
   return (
     <>
-      <TouchableOpacity onPress={open}>
+      <TouchableOpacity onPress={() => setFilterVisible(true)}>
         <AtomicIcon
           name="Filter"
           size="md"
@@ -100,12 +100,12 @@ const MyScreen = () => {
       </TouchableOpacity>
       
       <FilterSheet
-        ref={sheetRef}
+        visible={filterVisible}
         options={filterOptions}
         selectedIds={selectedIds}
         onFilterPress={handleFilterPress}
         onClearFilters={handleClearFilters}
-        onClose={close}
+        onClose={() => setFilterVisible(false)}
       />
     </>
   );
@@ -148,7 +148,6 @@ const { selectedIds, handleFilterPress } = useListFilters({
 
 - `useListFilters(config)`: Hook for managing filter state
 - `useListModals()`: Hook for managing modal visibility (optional)
-- `useBottomSheet()`: Hook for managing bottom sheet state (re-exported)
 
 ### Types
 
