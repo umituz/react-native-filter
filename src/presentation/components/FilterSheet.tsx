@@ -1,11 +1,11 @@
 /**
  * FilterSheet Component
  *
- * Modern filter bottom sheet using @umituz/react-native-bottom-sheet.
- * Provides a clean, theme-aware filter UI for list screens.
+ * Simple filter modal using React Native's native Modal component.
+ * No extra dependencies, works out of the box.
  *
  * Features:
- * - Bottom sheet UI (smooth animations)
+ * - Native Modal (no Reanimated issues)
  * - Single/multi-select support
  * - Icon support for filter options
  * - Clear filters button
@@ -14,25 +14,26 @@
  *
  * Usage:
  * ```tsx
- * const { sheetRef, open, close } = useBottomSheet();
+ * const [visible, setVisible] = useState(false);
  * const { selectedIds, handleFilterPress, handleClearFilters } = useListFilters({
  *   options: filterOptions,
  *   defaultFilterId: "all",
  * });
  *
  * <FilterSheet
- *   ref={sheetRef}
+ *   visible={visible}
  *   options={filterOptions}
  *   selectedIds={selectedIds}
  *   onFilterPress={handleFilterPress}
  *   onClearFilters={handleClearFilters}
- *   onClose={close}
+ *   onClose={() => setVisible(false)}
  * />
  * ```
  */
 
-import React, { forwardRef, useCallback } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import React, { useCallback } from "react";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   AtomicText,
   AtomicButton,
@@ -40,11 +41,14 @@ import {
 } from "@umituz/react-native-design-system";
 import { useAppDesignTokens } from "@umituz/react-native-design-system-theme";
 import { useLocalization } from "@umituz/react-native-localization";
-import { BottomSheet, type BottomSheetRef } from "@umituz/react-native-bottom-sheet";
 import type { FilterOption } from "../../domain/entities/Filter";
 import { FilterUtils } from "../../domain/entities/Filter";
 
 export interface FilterSheetProps {
+  /**
+   * Whether the modal is visible
+   */
+  visible: boolean;
   /**
    * Filter options to display
    */
@@ -78,69 +82,56 @@ export interface FilterSheetProps {
 /**
  * FilterSheet Component
  *
- * Modern filter bottom sheet with smooth animations.
+ * Simple native Modal-based filter sheet - no extra dependencies.
  */
-export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
-  (
-    {
-      options,
-      selectedIds,
-      onFilterPress,
-      onClearFilters,
-      onClose,
-      defaultFilterId = "all",
-      title,
-    },
-    ref
-  ) => {
-    const tokens = useAppDesignTokens();
-    const { t } = useLocalization();
-    const internalRef = React.useRef<BottomSheetRef>(null);
+export const FilterSheet: React.FC<FilterSheetProps> = ({
+  visible,
+  options,
+  selectedIds,
+  onFilterPress,
+  onClearFilters,
+  onClose,
+  defaultFilterId = "all",
+  title,
+}) => {
+  const tokens = useAppDesignTokens();
+  const { t } = useLocalization();
+  const insets = useSafeAreaInsets();
 
-    // Expose ref methods - BottomSheet handles Reanimated ready check
-    React.useImperativeHandle(ref, () => ({
-      snapToIndex: (index: number) => {
-        internalRef.current?.snapToIndex(index);
-      },
-      snapToPosition: (position: string | number) => {
-        internalRef.current?.snapToPosition(position);
-      },
-      expand: () => {
-        internalRef.current?.expand();
-      },
-      collapse: () => {
-        internalRef.current?.collapse();
-      },
-      close: () => {
-        internalRef.current?.close();
-      },
-    }), []);
+  const hasActiveFilter = FilterUtils.hasActiveFilter(selectedIds, defaultFilterId);
 
-    const activeFilter = FilterUtils.getActiveFilter(selectedIds, defaultFilterId);
-    const hasActiveFilter = FilterUtils.hasActiveFilter(selectedIds, defaultFilterId);
-
-    const handleFilterPressWithClose = useCallback(
-      (filterId: string) => {
-        onFilterPress(filterId);
-        // Auto-close on single-select mode (common pattern)
-        // Remove this if you want manual close control
-      },
-      [onFilterPress]
-    );
-
-    const handleClose = useCallback(() => {
+  const handleFilterPressWithClose = useCallback(
+    (filterId: string) => {
+      onFilterPress(filterId);
       onClose?.();
-    }, [onClose]);
+    },
+    [onFilterPress, onClose]
+  );
 
-    // BottomSheet component handles Reanimated ready check internally
-    return (
-      <BottomSheet
-        ref={internalRef}
-        preset="medium"
-        enableBackdrop
-        onClose={handleClose}
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <Pressable
+        style={styles.backdrop}
+        onPress={onClose}
       >
-        <View style={styles.container}>
+        <Pressable
+          style={[
+            styles.sheet,
+            {
+              backgroundColor: tokens.colors.surface,
+              paddingBottom: insets.bottom,
+            },
+          ]}
+          onPress={(e) => e.stopPropagation()}
+        >
+          {/* Handle indicator */}
+          <View style={[styles.handle, { backgroundColor: tokens.colors.border }]} />
+
           {/* Header */}
           <View
             style={[
@@ -155,7 +146,7 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
               {title || t("general.filter") || "Filter"}
             </AtomicText>
             <TouchableOpacity
-              onPress={handleClose}
+              onPress={onClose}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               testID="close-filter-sheet"
             >
@@ -240,17 +231,32 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(
               </AtomicButton>
             </View>
           )}
-        </View>
-      </BottomSheet>
-    );
-  }
-);
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+};
 
 FilterSheet.displayName = "FilterSheet";
 
 const styles = StyleSheet.create({
-  container: {
+  backdrop: {
     flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    maxHeight: "80%",
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    alignSelf: "center",
+    marginTop: 8,
+    marginBottom: 8,
   },
   header: {
     flexDirection: "row",
@@ -269,7 +275,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   optionsList: {
-    flexGrow: 1,
+    maxHeight: 400,
     paddingVertical: 8,
   },
   option: {

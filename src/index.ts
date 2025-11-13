@@ -51,7 +51,7 @@
  * ```
  *
  * Technical:
- * - Uses @umituz/react-native-bottom-sheet for UI
+ * - Uses React Native's native Modal component (no extra dependencies)
  * - Theme-aware with @umituz/react-native-design-system-theme
  * - Localization support with @umituz/react-native-localization
  * - Zero backend dependencies
@@ -67,7 +67,4 @@ export { useListModals, type UseListModalsReturn } from "./presentation/hooks/us
 
 // Components
 export { FilterSheet, type FilterSheetProps } from "./presentation/components/FilterSheet";
-
-// Re-export useBottomSheet from bottom-sheet package for convenience
-export { useBottomSheet, type BottomSheetRef } from "@umituz/react-native-bottom-sheet";
 

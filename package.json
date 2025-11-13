@@ -1,6 +1,6 @@
 {
   "name": "@umituz/react-native-filter",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "Modern, reusable filter system for React Native with bottom sheet UI, single/multi-select support, and theme-aware design",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -30,15 +30,14 @@
     "url": "https://github.com/umituz/react-native-filter"
   },
   "peerDependencies": {
-    "@umituz/react-native-bottom-sheet": "*",
     "@umituz/react-native-design-system": "*",
     "@umituz/react-native-design-system-theme": "*",
     "@umituz/react-native-localization": "*",
     "react": ">=18.2.0",
-    "react-native": ">=0.74.0"
+    "react-native": ">=0.74.0",
+    "react-native-safe-area-context": "^5.0.0"
   },
   "devDependencies": {
-    "@umituz/react-native-bottom-sheet": "latest",
     "@umituz/react-native-design-system": "latest",
     "@umituz/react-native-design-system-theme": "latest",
     "@umituz/react-native-localization": "latest",
@@ -46,6 +45,7 @@
     "@types/react-native": "^0.73.0",
     "react": "^18.2.0",
     "react-native": "^0.74.0",
+    "react-native-safe-area-context": "^5.6.0",
     "typescript": "^5.3.3"
   },
   "publishConfig": {
